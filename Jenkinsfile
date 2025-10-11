@@ -4,30 +4,30 @@ pipeline {
     stages {
         stage('Preparar entorno') {
             steps {
-                echo 'Iniciando pipeline local con Docker Compose...'
+                echo 'Iniciando pipeline en Azure con Docker Compose...'
             }
         }
 
         stage('Apagar contenedores previos') {
             steps {
-                dir('/var/lib/jenkins/workspace/Proyecto_devops') {
-                    sh 'docker-compose down || true'
+                dir('.') {
+                    sh 'docker compose down || true'
                 }
             }
         }
 
         stage('Construir contenedores') {
             steps {
-                dir('/var/lib/jenkins/workspace/Proyecto_devops') {
-                    sh 'docker-compose build'
+                dir('.') {
+                    sh 'docker compose build'
                 }
             }
         }
 
         stage('Levantar aplicación') {
             steps {
-                dir('/var/lib/jenkins/workspace/Proyecto_devops') {
-                    sh 'docker-compose up -d'
+                dir('.') {
+                    sh 'docker compose up -d'
                 }
             }
         }
@@ -37,12 +37,19 @@ pipeline {
                 sh 'docker ps -a'
             }
         }
+
+        stage('Limpiar imágenes antiguas') {
+            steps {
+                sh 'docker image prune -f'
+            }
+        }
     }
 
     post {
         always {
-            echo 'Pipeline finalizado.'
+            echo 'Pipeline finalizado correctamente.'
         }
     }
 }
+
  
