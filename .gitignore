@@ -1,0 +1,118 @@
+# ==========================================================
+# 📦 PROYECTO DEVOPS - DUVÁN GONZÁLEZ
+# Ignorar archivos temporales, secretos, binarios y generados
+# ==========================================================
+
+# === 🐳 DOCKER ===
+*.log
+docker-compose.override.yml
+.docker/
+*.env
+.env.local
+.env.production
+.env.development
+
+# === 🧱 TERRAFORM ===
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# === ⚙️ ANSIBLE ===
+*.retry
+*.log
+*.tmp
+host_vars/*
+group_vars/*
+inventory/*
+!inventory/example_inventory.ini   # si quieres dejar un ejemplo base
+vault_pass.txt
+
+# === 🧰 JENKINS ===
+workspace/
+secrets/
+*.bak
+*.tmp
+*.log
+*.old
+
+# === 🐍 PYTHON (BACKEND / FLASK) ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+instance/
+*.egg-info/
+*.egg
+dist/
+build/
+venv/
+.env/
+.envrc
+.DS_Store
+
+# === 🌐 FRONTEND (HTML, JS, CSS) ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+dist/
+build/
+*.map
+
+# === 🧩 NGINX / SITIO ESTÁTICO ===
+nginx.conf.bak
+*.pid
+*.log
+*.temp
+
+# === 🔐 SECRETS Y CLAVES ===
+id_rsa
+id_rsa.pub
+*.pem
+*.key
+*.crt
+*.cer
+secrets.json
+config.json
+credentials.yaml
+*.p12
+
+# === 💻 SISTEMA / EDITORES ===
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+*.tmp
+*.bak
+*.orig
+
+# === 🧪 TESTS ===
+coverage/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+htmlcov/
+
+# === 📂 VARIOS ===
+*.tar
+*.zip
+*.gz
+*.7z
+*.rar
+*.iso
+*.bak
+*.old
+*.out
