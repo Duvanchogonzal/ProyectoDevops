@@ -1,0 +1,45 @@
+---
+- name: Actualizar paquetes
+  apt:
+    update_cache: yes
+
+- name: Instalar dependencias necesarias
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+
+- name: Agregar la clave GPG oficial de Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Agregar el repositorio de Docker
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Instalar Docker
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+    update_cache: yes
+
+- name: Instalar Docker Compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+
+- name: Agregar usuario azureuser al grupo docker
+  user:
+    name: azureuser
+    groups: docker
+    append: yes
+

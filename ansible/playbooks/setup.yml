@@ -1,0 +1,6 @@
+---
+- name: Configurar VM de Azure con dependencias
+  hosts: azure_vm
+  become: yes
+  roles:
+    - common
