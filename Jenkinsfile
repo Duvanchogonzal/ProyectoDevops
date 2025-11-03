@@ -1,55 +1,62 @@
+
 pipeline {
     agent any
 
+    environment {
+        DEPLOY_SERVER = "azureuser@20.185.223.244"
+        SSH_KEY = "/var/lib/jenkins/.ssh/id_rsa"
+        APP_DIR = "/home/azureuser/app"  // Ruta donde se desplegará la app
+    }
+
+    triggers {
+        // Detecta automáticamente cambios en GitHub
+        pollSCM('H/2 * * * *') // verifica cada 2 minutos
+    }
+
     stages {
-        stage('Preparar entorno') {
+        stage('Clonar Repositorio') {
             steps {
-                echo 'Iniciando pipeline en Azure con Docker Compose...'
+                git branch: 'main', url: 'https://github.com/duvanchogonzal/ProyectoDevops.git'
             }
         }
 
-        stage('Apagar contenedores previos') {
+        stage('Construir Imágenes Docker') {
             steps {
-                dir('.') {
-                    sh 'docker compose down || true'
-                }
+                sh '''
+                docker compose -f docker-compose.yml build
+                '''
             }
         }
 
-        stage('Construir contenedores') {
+        stage('Copiar Archivos a VM2') {
             steps {
-                dir('.') {
-                    sh 'docker compose build'
-                }
+                sh '''
+                scp -i $SSH_KEY -o StrictHostKeyChecking=no -r * $DEPLOY_SERVER:$APP_DIR
+                '''
             }
         }
 
-        stage('Levantar aplicación') {
+        stage('Desplegar Aplicación en VM2') {
             steps {
-                dir('.') {
-                    sh 'docker compose up -d'
-                }
-            }
-        }
-
-        stage('Verificar contenedores') {
-            steps {
-                sh 'docker ps -a'
-            }
-        }
-
-        stage('Limpiar imágenes antiguas') {
-            steps {
-                sh 'docker image prune -f'
+                sh '''
+                ssh -i $SSH_KEY -o StrictHostKeyChecking=no $DEPLOY_SERVER "
+                    cd $APP_DIR &&
+                    docker compose down &&
+                    docker compose up -d --build
+                "
+                '''
             }
         }
     }
 
     post {
-        always {
-            echo 'Pipeline finalizado correctamente.'
+        success {
+            echo '✅ Despliegue exitoso en VM2'
+        }
+        failure {
+            echo '❌ Falló el despliegue'
         }
     }
 }
 
- 
+
